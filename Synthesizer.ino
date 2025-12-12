@@ -26,7 +26,7 @@ const float RELEASE = 0.0001f;
 const float LFO_DEPTH = 0.45f; 
 
 const int WAVETABLE_SIZE = 512;
-const int WAVE_TYPES = 3; 
+const int WAVE_TYPES = 4; 
 int16_t wavetables[WAVE_TYPES][WAVETABLE_SIZE]; 
 int current_wave_index = 0; 
 
@@ -150,9 +150,12 @@ void create_wavetables()
     {
         double pos = (double)i / WAVETABLE_SIZE; 
         wavetables[0][i] = (int16_t)(sin(2.0 * M_PI * pos) * AMP); 
-        wavetables[1][i] = (int16_t)(((2.0 * pos) - 1.0) * AMP);   
+        float ramp = pos * 2.0f; 
+        float tri = (ramp < 1.0f) ? (ramp * 2.0f - 1.0f) : (3.0f - ramp * 2.0f);
+        wavetables[1][i] = (int16_t)(tri * AMP);        
+        wavetables[2][i] = (int16_t)(((2.0 * pos) - 1.0) * AMP);   
         if (i < WAVETABLE_SIZE / 2) wavetables[2][i] = (int16_t)AMP; 
-        else wavetables[2][i] = (int16_t)-AMP;
+        else wavetables[3][i] = (int16_t)-AMP;
     }
 }
 
@@ -164,9 +167,10 @@ void check_inputs()
    else octave_factor = 1.0f;
 
    int waveform = analogRead(WAVEFORM_POT); 
-   if (waveform < 1300) current_wave_index = 0;      
-   else if (waveform > 2800) current_wave_index = 2; 
-   else current_wave_index = 1;                      
+   if (waveform < 1000) current_wave_index = 0;    
+   else if (waveform >= 1000 && waveform <= 2000) current_wave_index = 1;
+   else if (waveform > 2000 && waveform < 3000) current_wave_index = 2; 
+   else current_wave_index = 3;                      
    
    int speed = analogRead(LFO_SPEED_POT);
    float speedNorm = (float)speed / 4095.0f;
