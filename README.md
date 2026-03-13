@@ -54,7 +54,7 @@ Filtering: Applies a simple IIR Low-Pass Filter with a cutoff frequency modulate
 
 Spatial FX: The signal is fed into a Circular Delay Buffer (10,000 samples) to create a reverb/echo effect before clipping protection.
 
-Installation
+## Installation
 1. Clone this repository.
 
 2. Install the ESP32-A2DP library in your Arduino IDE.
